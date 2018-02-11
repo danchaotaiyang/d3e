@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+    .axis text {
+        font-size: 11px;
+    }
+    .myRect {
+        fill: #58a1ff;
+    }
+    .myText {
+        fill: white;
+        text-anchor: middle;
+    }
+    </style>
+</head>
+<body>
+<script src="../node_modules/d3/build/d3.min.js"></script>
+<!--<script src="js/d3.min.js"></script>-->
+<script>
+let body = d3.select('body');
+
+let width = 400, height = 400;
+
+let svg = body.append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+d3.json('e.json', (err, {data}) => {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    let xMax = d3.max(data, (d) => d.x);
+    let yMax = d3.max(data, (d) => d.y);
+
+    let xArr = data.map(i => i.x);
+
+    let xScale = d3.scaleBand()
+        .domain([0, ...xArr])
+        .range([0, 300]);
+    let xAxis = d3.axisBottom(xScale);
+    let gxAxis = svg.append('g')
+        .attr('class', 'axis')
+        .attr('transform', 'translate(30, 300)')
+        .call(xAxis);
+
+
+    let yScale = d3.scaleLinear()
+        .domain([0, yMax])
+        .range([250, 0]);
+    let yAxis = d3.axisLeft(yScale);
+    let gyAxis = svg.append('g')
+        .attr('class', 'axis')
+        .attr('transform', 'translate(30, 50)')
+        .call(yAxis);
+
+
+    let line = d3.line()
+        .x((d) => xScale(d.x))
+        .y((d) => yScale(d.y))
+        .curve('basis');
+
+    svg.append('path')
+        .attr('transform', 'translate(30, 100)')
+        .attr('class', 'myPath')
+        .attr('d', line(data));
+
+});
+
+
+
+</script>
+</body>
+</html>

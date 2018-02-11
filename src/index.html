@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+    .axis text {
+        font-size: 11px;
+    }
+    .myRect {
+        fill: #58a1ff;
+    }
+    .myText {
+        fill: white;
+        text-anchor: middle;
+    }
+    </style>
+</head>
+<body>
+<!--<script src="../node_modules/d3/build/d3.min.js"></script>-->
+<script src="js/d3.min.js"></script>
+<script>
+let body = d3.select('body');
+
+let width = 400, height = 400;
+
+let svg = body.append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+
+
+let xScale = d3.scale.ordinal()
+    .domain([0, 1, 2, 3, 4, 5, 6])
+    .rangeRoundBands([0, 300]);
+let xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient('bottom');
+let gxAxis = svg.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(30, 300)')
+    .call(xAxis);
+
+
+let yScale = d3.scale.linear()
+    .domain([100, 0])
+    .range([0, 250]);
+let yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient('left');
+let gyAxis = svg.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(30, 50)')
+    .call(yAxis);
+
+let dataset = [41, 67, 35, 85, 16, 66, 90];
+
+yScale.domain([0, 100]);
+
+let rects = svg.selectAll('.myRect')
+    .data(dataset)
+    .enter()
+    .append('rect')
+    .attr('class', 'myRect')
+    .attr('transform', 'translate(30, 50)')
+    .attr('x', (d, i) => xScale(i) + 8)
+    .attr('y', (d) => height - 150 - yScale(d))
+    .attr('width', () => xScale.rangeBand() - 16)
+    .attr('height', (d) => yScale(d) - 1);
+
+let text = svg.selectAll('.myText')
+    .data(dataset)
+    .enter()
+    .append('text')
+    .attr('class', 'myText')
+    .attr('transform', 'translate(30, 50)')
+    .attr('x', (d, i) => xScale(i) + 8)
+    .attr('y', (d) => height - 150 - yScale(d))
+    .attr('dx', () => xScale.rangeBand() / 2 - 8)
+    .attr('dy', (d) => 15)
+    .text((d) => d);
+
+
+/*
+let reats = svg.selectAll('.myRect')
+    .data(dataset)
+    .enter()
+    .append('rect')
+    .attr('class', 'myRect')
+    .attr('x', (d, i) => 20 + (width / dataset.length - 1) * i)
+    .attr('y', (d) => height - 80 - d)
+    .attr('width', () => width / dataset.length - 15)
+    .attr('height', d => d);
+*/
+
+</script>
+</body>
+</html>

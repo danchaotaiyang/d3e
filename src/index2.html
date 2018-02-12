@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: black;
-        shape-rendering: crispEdges;
-    }
-    .axis text {
-        font-size: 11px;
-    }
-    .myRect {
-        fill: #58a1ff;
-    }
-    .myText {
-        fill: white;
-        text-anchor: middle;
-    }
-    </style>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 11px;
+}
+
+.myRect {
+    fill: #58a1ff;
+}
+
+.myText {
+    fill: white;
+    text-anchor: middle;
+}
+</style>
 </head>
 <body>
 <script src="../node_modules/d3/build/d3.min.js"></script>
@@ -63,7 +66,7 @@ let rects = svg.selectAll('.myRect')
     .attr('class', 'myRect')
     .attr('transform', 'translate(30, 50)')
     .attr('x', (d, i) => xScale(i) + 10)
-    .attr('y', (d) => height  - 150 - yScale(d))
+    .attr('y', (d) => height - 150 - yScale(d))
     .attr('width', () => xScale.bandwidth() - 16)
     .attr('height', (d) => yScale(d));
 
@@ -74,7 +77,7 @@ let text = svg.selectAll('.myText')
     .attr('class', 'myText')
     .attr('transform', 'translate(30, 50)')
     .attr('x', (d, i) => xScale(i) + 10)
-    .attr('y', (d) => height  - 150 - yScale(d))
+    .attr('y', (d) => height - 150 - yScale(d))
     .attr('dx', () => xScale.bandwidth() / 2 - 8)
     .attr('dy', 15)
     .text((d) => d);

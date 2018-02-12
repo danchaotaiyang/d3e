@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-    .axis path,
-    .axis line {
-        fill: none;
-        stroke: black;
-        shape-rendering: crispEdges;
-    }
-    .axis text {
-        font-size: 11px;
-    }
-    .myRect {
-        fill: #58a1ff;
-    }
-    .myText {
-        fill: white;
-        text-anchor: middle;
-    }
-    </style>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 11px;
+}
+
+.myRect {
+    fill: #58a1ff;
+}
+
+.myText {
+    fill: white;
+    text-anchor: middle;
+}
+</style>
 </head>
 <body>
 <!--<script src="../node_modules/d3/build/d3.min.js"></script>-->
@@ -33,7 +36,6 @@ let width = 400, height = 400;
 let svg = body.append('svg')
     .attr('width', width)
     .attr('height', height);
-
 
 
 let xScale = d3.scale.ordinal()

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 11px;
+}
+
+.myRect {
+    fill: #58a1ff;
+}
+
+.myText {
+    fill: white;
+    text-anchor: middle;
+}
+
+.myPath {
+    fill: none;
+    stroke: black;
+}
+</style>
+</head>
+<body>
+<button onclick="update()">更新</button>
+<button onclick="addData()">新增</button>
+<button onclick="delData()">移除</button>
+<script src="../node_modules/d3/build/d3.min.js"></script>
+<!--<script src="js/d3.min.js"></script>-->
+<script>
+let body = d3.select('body');
+
+let width = 400, height = 400;
+
+let svg = body.append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+let xScale = d3.scaleLinear()
+    .domain([0, 100])
+    .range([0, 300]);
+let xAxis = d3.axisBottom(xScale);
+let gxAxis = svg.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(30, 300)')
+    .call(xAxis);
+
+
+let yScale = d3.scaleLinear()
+    .domain([100, 0])
+    .range([0, 250]);
+let yAxis = d3.axisLeft(yScale);
+let gyAxis = svg.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(30, 50)')
+    .call(yAxis);
+
+let dataset = [];
+
+for (let i = 0; i < 10; i++) {
+    dataset.push({x: Math.random() * 100, y: Math.random() * 100});
+}
+
+let point = svg.selectAll('.myCircle')
+    .data(dataset)
+    .enter()
+    .append('circle')
+    .attr('class', 'myCircle')
+    .attr('transform', 'translate(30, 50)')
+    .attr('r', 6)
+    .attr('cx', d => xScale(d.x))
+    .attr('cy', d => yScale(d.y));
+
+function update() {
+    for (let i = 0; i < dataset.length; i++) {
+        dataset[i].x = Math.random() * 100;
+        dataset[i].y = Math.random() * 100;
+    }
+    updatePoint();
+}
+
+function addData() {
+    dataset.push({x: Math.random() * 100, y: Math.random() * 100});
+    updatePoint();
+}
+
+function delData() {
+    dataset.pop();
+    updatePoint();
+}
+
+function updatePoint() {
+    let update = svg.selectAll('.myCircle')
+        .data(dataset);
+
+    let enter = update.enter();
+
+    let exit = update.exit();
+
+    enter.append('circle')
+        .attr('class', 'myCircle')
+        .attr('transform', 'translate(30, 50)')
+        .attr('r', 6)
+        .attr('cx', d => xScale(0))
+        .attr('cy', d => yScale(0))
+        .transition()
+        .duration(1000)
+        .attr('cx', d => xScale(d.x))
+        .attr('cy', d => yScale(d.y));
+
+    update.transition()
+        .duration(1000)
+        .attr('cx', d => xScale(d.x))
+        .attr('cy', d => yScale(d.y));
+
+    exit
+        .attr('fill-opacity', 1)
+        .transition()
+        .duration(1000)
+        .attr('fill-opacity', 0)
+        .remove();
+
+}
+
+</script>
+</body>
+</html>

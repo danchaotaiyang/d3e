@@ -20,6 +20,10 @@
         fill: white;
         text-anchor: middle;
     }
+    .myPath {
+        fill: none;
+        stroke: black
+    }
     </style>
 </head>
 <body>
@@ -44,8 +48,8 @@ d3.json('e.json', (err, {data}) => {
 
     let xArr = data.map(i => i.x);
 
-    let xScale = d3.scaleBand()
-        .domain([0, ...xArr])
+    let xScale = d3.scaleLinear()
+        .domain([0, xMax])
         .range([0, 300]);
     let xAxis = d3.axisBottom(xScale);
     let gxAxis = svg.append('g')
@@ -67,12 +71,37 @@ d3.json('e.json', (err, {data}) => {
     let line = d3.line()
         .x((d) => xScale(d.x))
         .y((d) => yScale(d.y))
-        .curve('basis');
+        // .curve(d3.curveBasis);
+        .curve(d3.curveCardinal);
 
-    svg.append('path')
-        .attr('transform', 'translate(30, 100)')
+    let gLine = svg.append('g')
+        .attr('class', 'gLine')
+        .attr('transform', 'translate(30, 50)');
+
+    gLine.append('path')
         .attr('class', 'myPath')
         .attr('d', line(data));
+
+    let gCircle = svg.selectAll('.lineCircle')
+        .data(data)
+        .enter()
+        .append('g');
+
+    gCircle
+        .append('circle')
+        .attr('class', 'lineCircle')
+        .attr('cx', (d, i) => xScale(d.x) + 30)
+        .attr('cy', (d) => yScale(d.y) + 50)
+        .attr('r', 3.5);
+
+/*
+    gCircle
+        .append('text')
+        .attr('class', 'lineText')
+        .attr('x', (d, i) => xScale(d.x) + 30)
+        .attr('y', (d) => yScale(d.y) + 50)
+        .text((d) => d.y)
+*/
 
 });
 

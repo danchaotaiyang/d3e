@@ -28,6 +28,9 @@
     fill: none;
     stroke: black;
 }
+.cir {
+    fill: rgba(0, 0, 0, .5)
+}
 </style>
 </head>
 <body>
@@ -80,11 +83,34 @@ d3.json('e.json', (err, {data}) => {
         .x((d) => xScale(d.x))
         .y((d) => yScale(d.y))
         .interpolate('basis');
+        // .interpolate('line');
 
     svg.append('path')
         .attr('transform', 'translate(30, 100)')
         .attr('class', 'myPath')
         .attr('d', line(data));
+
+    let gCircle = svg.selectAll('.cir')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('transform', 'translate(30, 100)');
+
+    gCircle
+        .append('circle')
+        .attr('class', 'cir')
+        .attr('r', 4)
+        .attr('cx', (d) => xScale(d.x))
+        .attr('cy', (d) => yScale(d.y));
+
+    gCircle
+        .append('text')
+        // .attr('class', 'myText')
+        .attr('x', (d, i) => xScale(i))
+        .attr('y', (d) => yScale(d.y))
+        .attr('dx', () => xScale.bandwidth())
+        .attr('dy', 15)
+        .text((d) => d.y)
 });
 
 

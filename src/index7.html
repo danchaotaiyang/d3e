@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+
+    .axis text {
+        font-size: 11px;
+    }
+
+    .myRect {
+        fill: #58a1ff;
+    }
+
+    .myText {
+        fill: white;
+        text-anchor: middle;
+    }
+
+    .myPath {
+        fill: none;
+        stroke: black;
+    }
+    .arcGroups {
+
+    }
+    </style>
+</head>
+<body>
+<!--<script src="../node_modules/d3/build/d3.min.js"></script>-->
+<script src="js/d3.min.js"></script>
+<script>
+let body = d3.select('body');
+
+let width = 400, height = 400;
+
+let svg = body.append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+let dataset = [60, 20, 30, 24, 70];
+
+let pie = d3.layout.pie()
+    .startAngle(Math.PI * 0.2)
+    .endAngle(Math.PI * 2.2);
+
+let piedata = pie(dataset);
+console.log(piedata);
+
+let color = d3.scale.category10();
+
+let arcs = svg.selectAll('.arcGroups')
+    .data(piedata)
+    .enter()
+    .append('g')
+    .attr('class', 'arcGroups')
+    .attr('transform', 'translate(200, 200)');
+
+let innerRadius = 50;
+
+let outerRadius = 180;
+
+let arc = d3.svg.arc()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
+
+arcs.append('path')
+    .attr('fill', (d, i) => color(i))
+    .attr('d', (d) => arc(d));
+
+arcs.append('text')
+    .attr('class', 'myText')
+    .attr('transform', (d) => {
+        let center = arc.centroid(d);
+        return `translate(${center[0] * 1.4}, ${center[1] * 1.4})`;
+    })
+    .text((d) => d.value);
+
+</script>
+</body>
+</html>

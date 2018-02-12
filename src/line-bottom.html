@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
+<title>Title</title>
+<style>
+.line-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 1170px;
+    margin-left: -585px;
+    background-color: #f6f6f6;
+}
+.lineBottom {
+    fill: none;
+    stroke: black;
+    /*stroke-width: 1.5px;*/
+    /*shape-rendering: crispEdges;*/
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="line-bottom"></div>
+</div>
+<script src="../node_modules/d3/build/d3.min.js"></script>
+<script>
+let lineBottom = d3.select('.line-bottom');
+
+
+d3.json('e.json', (err, {data}) => {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    let xMax = d3.max(data, (d) => d.x);
+    let yMax = d3.max(data, (d) => d.y);
+
+    let lineBottomSvg = lineBottom.append('svg')
+        .attr('width', 200)
+        .attr('height', 30);
+
+
+    let xScale = d3.scaleLinear()
+        .domain([0, xMax])
+        .range([0, 200]);
+
+    let yScale = d3.scaleLinear()
+        .domain([0, yMax])
+        .range([0, 30]);
+
+
+    let line = d3.line()
+        .x((d) => xScale(d.x))
+        .y((d) => yScale(d.y));
+
+    lineBottomSvg.append('path')
+        .attr('class', 'lineBottom')
+        .attr('d', line(data));
+});
+
+
+
+
+</script>
+</body>
+</html>

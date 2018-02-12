@@ -75,8 +75,8 @@ d3.json('e.json', (err, {data}) => {
     let line = d3.line()
         .x((d) => xScale(d.x))
         .y((d) => yScale(d.y))
-        // .curve(d3.curveBasis);
-        .curve(d3.curveCardinal);
+        .curve(d3.curveBasis);
+        // .curve(d3.curveCardinal);
 
     let gLine = svg.append('g')
         .attr('class', 'gLine')

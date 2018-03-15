@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <style type="text/css">
+        html, body {
+            height: 100%;
+        }
+
+        g:hover .pop {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+        .item {
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+<svg id="svg" width="100%" height="100%">
+
+</svg>
+
+<script src="https://cdn.bootcss.com/d3/4.13.0/d3.min.js"></script>
+<script type="text/javascript">
+    var data = [
+	{id: 1, rname: '干活', rrun: 80, start: 1, end: 6, rposen: ['张超', '赵明']},
+	{id: 2, rname: '干活', rrun: 10, start: 6, end: 10, rposen: ['张超'], pid: 1}
+    ];
+
+    var svg = d3.select('#svg');
+
+    draw(svg, data);
+
+    function draw(object, data) {
+	var str = '';
+	for (var i = data.length - 1; i >= 0; i--) {
+	    console.log(data[i]);
+	    data[i] = addRect(data[i]);
+	    console.log(data[i]);
+	    // str += data[i].html;
+
+	}
+	console.log(1);
+	var g = svg.selectAll('g')
+	    .data(data)
+	    .enter()
+	    .append('g')
+        .attr('class', 'group');
+	g
+	    .append('rect')
+        .attr('class', 'item')
+	    .attr('x', (d) => d.rect.px1)
+	    .attr('y', (d) => d.rect.py1)
+	    .attr('width', (d) => d.rect.px2)
+	    .attr('height', (d) => d.rect.py2)
+	    .attr('fill', '#ccc')
+        .attr('');
+	g
+	    .append('rect')
+	    .attr('x', (d) => d.rect.qx1)
+	    .attr('y', (d) => d.rect.qy1)
+	    .attr('width', (d) => d.rect.qx2)
+	    .attr('height', (d) => d.rect.qy2)
+	    .attr('fill', '#999');
+	g
+	    .append('text')
+	    .text((d) => d.rect.str)
+	    .attr('x', (d) => d.rect.sx)
+	    .attr('y', (d) => d.rect.sy);
+
+	g
+        .append('path')
+        .attr('stroke', '#000')
+        .attr('d', (d) => {
+            return `M${d.rect.px1 + d.rect.px2},${d.rect.py2 / 2 + d.rect.py1} 50,${d.rect.py2 / 2 + d.rect.py1}`
+        });
+
+	console.log(str);
+	// object.html(str);
+    }
+
+    function addRect(p) {
+	var rect = {};
+	//外侧矩形计算
+	rect.py1 = p.id * 20;
+	rect.py2 = 20;
+	rect.px1 = p.start * 20;
+	rect.px2 = (p.end - p.start) * 20;
+
+	//内侧矩形计算
+	rect.qy1 = rect.py1 + 5;
+	rect.qy2 = 10;
+	rect.qx1 = rect.px1;
+	rect.qx2 = rect.px2 * p.rrun / 100;
+
+	//人
+	rect.str = p.rposen.toString();
+	rect.sx = rect.px2 + rect.px1 + 20;
+	rect.sy = rect.py1;
+
+	p.rect = rect;
+
+	// p.html = '<g><rect x="' + rect.px1 + '" y="' + rect.py1 + '" width="' + rect.px2 + '" height="' + rect.py2 + '" style="fill:#CCC;"/><rect x="' + rect.qx1 + '" y="' + rect.qy1 + '" width="' + rect.qx2 + '" height="' + rect.qy2 + '" style="fill:#666;"/><text x="90" y="60" class="hidden pop">该任务已完成' + p.rrun + '%</text><text x="' + rect.sx + '" y="' + rect.sy + '">' + rect.str + '</text></g>';
+	return p;
+    }
+
+    function addLine(object, rect1, rect2) {
+
+    }
+</script>
+</body>
+</html>

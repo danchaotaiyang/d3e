@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: none;
+            shape-rendering: crispEdges;
+        }
+
+        .xAxis path {
+            stroke-dasharray: 3 2;
+            stroke: #d0cfd4;
+        }
+
+        .xAxis line {
+            stroke: none;
+        }
+
+        .rank-line {
+            width: 650px;
+            height: 240px;
+        }
+
+        .tick text {
+            fill: #8b8a90;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .rank-path {
+            fill: none;
+            stroke: #744bfb;
+            stroke-width: 3px;
+        }
+
+        .rank-fill {
+        / / fill: #000 fill-opacity: .7;
+        }
+
+        .rank-date {
+            color: #bfbec6;
+        }
+
+        .rank-date-line {
+            stroke-dasharray: 3 2;
+            stroke: #8b8a90;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="rank-line"></div>
+</div>
+<script src="../node_modules/d3/build/d3.min.js"></script>
+<script>
+    const lineData = [
+	{"date": "2018-03-08", "count": 22},
+	{"date": "2018-03-09", "count": 9},
+	{"date": "2018-03-10", "count": 3},
+	{"date": "2018-03-11", "count": 4},
+	{"date": "2018-03-12", "count": 16},
+	{"date": "2018-03-13", "count": 11},
+	{"date": "2018-03-14", "count": 19}
+    ];
+    let length = lineData.length;
+
+    const jsonData = [];
+    for (let i = 0; i < length; i++) {
+	let curData = lineData[i];
+	curData.date = new Date(curData.date);
+	jsonData.push(curData);
+    }
+
+
+    let lastItem = jsonData[length - 1];
+
+    let width = 650, height = 240, rangeWidth = width - 60,
+	a = d3.rgb(116, 75, 251), b = d3.rgb(255, 255, 255);
+
+    let rankLine = d3.select('.rank-line');
+    let svg = rankLine.append('svg')
+	.attr('class', 'rankLine')
+	.attr('width', width)
+	.attr('height', height);
+
+    let compute = d3.interpolate(a, b);
+
+    let defs = svg.append('defs');
+
+    let lg = defs.append('linearGradient')
+	.attr('id', 'linearColor')
+	.attr('x1', '0%')
+	.attr('y1', '0%')
+	.attr('x2', '0%')
+	.attr('y2', '100%');
+
+    lg.append('stop')
+	.attr('offset', '0%')
+	.style('stop-color', a.toString());
+
+    lg.append('stop')
+	.attr('offset', '100%')
+	.style('stop-color', b.toString());
+
+
+    let yMax = d3.max(jsonData, function (d) {
+	return d.count;
+    });
+
+    let yRange = Math.ceil(yMax / 100) * 100;
+
+    let xScale = d3.scaleTime()
+	.domain(d3.extent(jsonData, function (d) {
+	    return d.date;
+	}))
+	.range([0, rangeWidth]);
+
+    // 输出都正常
+
+    console.log(xScale(jsonData[0].date));
+    console.log(xScale(jsonData[1].date));
+    console.log(xScale(jsonData[2].date));
+    console.log(xScale(jsonData[3].date));
+    console.log(xScale(jsonData[4].date));
+    console.log(xScale(jsonData[5].date));
+    console.log(xScale(jsonData[6].date));
+
+    let xAxis = d3.axisBottom(xScale)
+	.ticks(length)
+	.tickFormat(d3.timeFormat('%m月%e'));
+
+    svg.append('g')
+	.attr('class', 'axis xAxis')
+	.attr('transform', 'translate(38, 220)')
+	.call(xAxis);
+
+
+    let yScale = d3.scaleLinear()
+	.domain([yRange, 0])
+	.range([0, height - 40]);
+
+    let yAxis = d3.axisLeft(yScale)
+	.ticks(5);
+
+    let hScale = height - yScale(lastItem.count) - 40;
+
+
+    let rAxis = d3.axisRight(yScale)
+	.ticks(5)
+	.tickSize(rangeWidth);
+
+    svg.append('g')
+	.attr('class', 'axis')
+	.attr('transform', 'translate(38, 20)')
+	.call(yAxis);
+
+
+    let line = d3.line()
+	.x(function (d) {
+	    return xScale(d.date);
+	})
+	.y(function (d) {
+	    return yScale(d.count);
+	})
+	.curve(d3.curveCardinal);
+
+    const customYAxis = (g) => {
+	g.call(rAxis);
+	g.select(".domain").remove();
+	g.selectAll(".tick line").attr("stroke", "#d0cfd4").attr("stroke-dasharray", "3, 2");
+	g.selectAll(".tick text").remove();
+    };
+
+    svg
+	.append('g')
+	.attr('transform', 'translate(38, 20)')
+	.call(customYAxis);
+
+    let g = svg
+	.append('g')
+	.attr('transform', 'translate(38, 20)');
+
+
+    g
+	.append('path')
+	.attr('class', 'rank-fill')
+	.attr('d', line(jsonData) + ' l0,' + hScale + ' l-' + rangeWidth + ',0')
+	.style('fill', 'url(#' + lg.attr('id') + ')');
+
+    g
+	.append('path')
+	.attr('class', 'rank-path')
+	.attr('d', line(jsonData));
+
+
+</script>
+</body>
+</html>

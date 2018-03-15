@@ -6,19 +6,26 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
 <title>Title</title>
 <style>
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #2B2B2B;
+}
 .line-bottom {
     position: absolute;
-    bottom: 0;
+    bottom: 1em;
     left: 50%;
     width: 1170px;
     margin-left: -585px;
-    background-color: #f6f6f6;
 }
+
+.line-bottom {
+
+}
+
 .lineBottom {
     fill: none;
-    stroke: black;
-    /*stroke-width: 1.5px;*/
-    /*shape-rendering: crispEdges;*/
+    stroke: #4B4B4B;
 }
 </style>
 </head>
@@ -30,40 +37,40 @@
 <script>
 let lineBottom = d3.select('.line-bottom');
 
+let lineBottomWidth = 600, lineBottomHeight = 20, data = [];
 
-d3.json('e.json', (err, {data}) => {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    let xMax = d3.max(data, (d) => d.x);
-    let yMax = d3.max(data, (d) => d.y);
+for (let i = 0; i < 400; i++) {
+    data.push(Math.random() * 100);
+}
 
-    let lineBottomSvg = lineBottom.append('svg')
-        .attr('width', 200)
-        .attr('height', 30);
+let yMax = d3.max(data, (d) => d);
 
+let lineBottomSvg = lineBottom.append('svg')
+    .attr('width', lineBottomWidth)
+    .attr('height', lineBottomHeight);
 
-    let xScale = d3.scaleLinear()
-        .domain([0, xMax])
-        .range([0, 200]);
+let xScale = d3.scaleLinear()
+    .domain([0, data.length])
+    .range([0, lineBottomWidth]);
 
-    let yScale = d3.scaleLinear()
-        .domain([0, yMax])
-        .range([0, 30]);
+let yScale = d3.scaleLinear()
+    .domain([0, yMax])
+    .range([0, lineBottomHeight]);
 
+let line = d3.line()
+    .x((d, i) => xScale(i))
+    .y((d) => yScale(d));
 
-    let line = d3.line()
-        .x((d) => xScale(d.x))
-        .y((d) => yScale(d.y));
+lineBottomSvg.append('path')
+    .attr('class', 'lineBottom')
+    .attr('d', line(data));
 
-    lineBottomSvg.append('path')
-        .attr('class', 'lineBottom')
+setInterval(() => {
+    data.shift();
+    data.push(Math.random() * 100);
+    lineBottomSvg.select('path')
         .attr('d', line(data));
-});
-
-
-
+}, 800);
 
 </script>
 </body>
